@@ -33,9 +33,10 @@ const appData = {
     servicesPercent: {},
     servicesNumber: {},
     init: function () {
-        appData.addTitle();
+        this.addTitle();
         buttonPlus.addEventListener('click', appData.addScreenBlock);
         appData.addRange();
+        // start
         startBtn.addEventListener('click', function () {
             screens.forEach(function (screen, index) {
                 const select = screen.querySelector("select");
@@ -44,9 +45,15 @@ const appData = {
                     return false;
                 } else {
                     appData.start();
+                    select.disabled = "disabled";
+                    input.disabled = "disabled";
+                    startBtn.style.display = "none";
+                    resetBtn.style.display = "";
                 }
             });
         });
+        // reset
+        resetBtn.addEventListener('click', this.reset);
     },
     start: function () {
         appData.addScreens();
@@ -57,6 +64,46 @@ const appData = {
 
         // appData.getServicePercentPrices();
         // appData.logger();
+    },
+    reset: function () {
+        startBtn.style.display = "";
+        resetBtn.style.display = "none";
+        appData.screenPrice = 0;
+        appData.count = 0;
+        appData.servicePricesPercent = 0;
+        appData.servicePricesNumber = 0;
+        appData.fullPrice = 0;
+        appData.servicePercentPrices = 0;
+        screens.forEach(function (screen, index) {
+            const select = screen.querySelector("select");
+            const input = screen.querySelector("input");
+            select.disabled = "";
+            input.disabled = "";
+            select.value = "";
+            input.value = "";
+        });
+        console.log(appData.screens);
+        appData.screens = [];
+        console.log(appData.screens);
+        otherItemsPercent.forEach(function (item) {
+            const check = item.querySelector("input[type=checkbox]");
+            const label = item.querySelector("label");
+            const input = item.querySelector("input[type=text]");
+            check.checked = "";
+            appData.servicesPercent[label.textContent] = 0;
+        });
+        otherItemsNumber.forEach(function (item) {
+            const check = item.querySelector("input[type=checkbox]");
+            const label = item.querySelector("label");
+            const input = item.querySelector("input[type=text]");
+            check.checked = "";
+            appData.servicesNumber[label.textContent] = 0;
+        });
+        total.value = 0;
+        totalCount.value = 0;
+        fullTotalCount.value = 0;
+        totalCountOther.value = 0;
+        totalCountRollback.value = 0;
     },
     addTitle: function () {
         document.title = title.textContent;
@@ -70,7 +117,6 @@ const appData = {
     },
     addScreens: function () {
         screens = document.querySelectorAll(".screen");
-
         screens.forEach(function (screen, index) {
             const select = screen.querySelector("select");
             const selectName = select.options[select.selectedIndex].textContent;
